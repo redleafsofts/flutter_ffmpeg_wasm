@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FFmpeg - WASM Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
@@ -62,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('FFmpeg flutter web'),
             Text(
               'Is FFmpeg loaded $isLoaded and selected $selectedFile',
               style: Theme.of(context).textTheme.headlineMedium,

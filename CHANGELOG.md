@@ -1,7 +1,7 @@
 ## 1.0.0
 
 - Thanks to maRci002
-- Release version.
+- Breaking Changes.
 - Refactored API to use `Future` instead of `promiseToFuture` calls
 - `createFFmpeg` now uses `CreateFFmpegParam`
 - `ffmpeg.run` now handles `List<String>`
