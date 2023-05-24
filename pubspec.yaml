@@ -1,23 +1,23 @@
 name: ffmpeg_wasm
 description: ffmpeg.wasm browser APIs dart port for accessing in Flutter web.
-version: 0.0.1
+version: 1.0.0
 homepage: "https://github.com/redleafsofts/ffmpeg_wasm_flutter"
 repository: "https://github.com/redleafsofts/ffmpeg_wasm_flutter"
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=2.19.2 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  js: ^0.6.5
+  js: ^0.6.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.1
 
 
 #flutter:

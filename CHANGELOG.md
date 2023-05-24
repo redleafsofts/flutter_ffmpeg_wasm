@@ -1,3 +1,18 @@
+## 1.0.0
+
+- Thanks to maRci002
+- Breaking Changes.
+- Refactored API to use `Future` instead of `promiseToFuture` calls
+- `createFFmpeg` now uses `CreateFFmpegParam`
+- `ffmpeg.run` now handles `List<String>`
+- `ffmpeg.runCommand` added to use one-liner command
+- `ffmpeg.setProgress` now requires `ProgressParam` callback
+- `ffmpeg.setLogger` now requires `LoggerParam` callback
+- `ffmpeg.unlink` added to free up memory
+- `ffmpeg.readDir` to read files which are handled by ffmpeg
+- Updated documentation
+- Updated example
+
 ## 0.0.1
 
 - Initial Release.

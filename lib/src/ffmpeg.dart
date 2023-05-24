@@ -2,7 +2,22 @@
 @JS('FFmpeg')
 library ffmpeg;
 
+import 'dart:typed_data';
+
 import 'package:js/js.dart';
+import 'package:js/js_util.dart';
+
+@JS()
+@anonymous
+abstract class CreateFFmpegParam {
+  external factory CreateFFmpegParam({bool? log, String? corePath});
+
+  /// Whether Enable or Disable ffmpeg log to console.
+  external bool? get log;
+
+  /// Path URL of ffmpeg-core library.
+  external String? get corePath;
+}
 
 @JS()
 @staticInterop
@@ -10,24 +25,21 @@ abstract class FFmpeg {}
 
 /// A factory function to create ffmpeg instance.
 ///
-/// [log] - Whether Enable or Disable ffmpeg log to console.
+/// [CreateFFmpegParam.log] - Whether Enable or Disable ffmpeg log to console.
 ///
-/// [corePath] - Path URL of ffmpeg-core library.
+/// [CreateFFmpegParam.corePath] - Path URL of ffmpeg-core library.
 ///
 /// Example :
 /// ```dart
-/// FFmpeg ffmpeg = createFFmpeg(true, "https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js");
+/// FFmpeg ffmpeg = createFFmpeg(CreateFFmpegParam(log: true, corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'));
 ///```
 @JS('createFFmpeg')
-@staticInterop
-external FFmpeg createFFmpeg(bool? log, String corePath);
+external FFmpeg createFFmpeg(CreateFFmpegParam? createFFmpeg);
 
-/// Fetches file from different source.
-///
-/// [uri] - URI of a file. Typically Http Url.
-/// ```dart
-/// Uint8List fetchedFile = await promiseToFuture(fetchFile(FILE_URL));
-/// ```
 @JS('fetchFile')
-@staticInterop
-external dynamic fetchFile(String uri);
+external dynamic _fetchFile(String url);
+
+/// Helper method to fetch the media
+Future<Uint8List> fetchFile(String url) {
+  return promiseToFuture(_fetchFile(url));
+}
