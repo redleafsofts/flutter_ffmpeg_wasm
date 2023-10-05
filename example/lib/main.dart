@@ -123,6 +123,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       );
               },
             ),
+            Image.network(
+              "https://images.pexels.com/photos/276267/pexels-photo-276267.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+              height: 96,
+            ),
           ],
         ),
       ),
@@ -138,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ffmpeg = createFFmpeg(
       CreateFFmpegParam(
         log: true,
-        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+        corePath: "https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
       ),
     );
 
