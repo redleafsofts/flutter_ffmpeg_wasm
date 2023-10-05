@@ -1,6 +1,7 @@
 # ffmpeg_wasm
 
-[`ffmpeg.wasm`](https://github.com/ffmpegwasm/ffmpeg.wasm) for Flutter web.
+[`ffmpeg.wasm`](https://github.com/ffmpegwasm/ffmpeg.wasm) for Flutter web. 
+[`See Demo`](https://flutter-ffmpeg-wasm.web.app/)
 
 ## Installation
 
