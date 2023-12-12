@@ -1,9 +1,10 @@
 import 'dart:html' as html;
 import 'dart:js' as js;
-
+import 'dart:typed_data';
 import 'package:ffmpeg_wasm/ffmpeg_wasm.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,12 +45,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final progress = ValueNotifier<double?>(null);
   final statistics = ValueNotifier<String?>(null);
 
-  @override
-  void dispose() {
-    progress.dispose();
-    statistics.dispose();
+  late Future<List<Uint8List>> dashFramesFuture;
 
-    super.dispose();
+  @override
+  void initState() {
+    dashFramesFuture = _genDashFrames();
+    super.initState();
   }
 
   @override
@@ -59,75 +60,111 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Is FFmpeg loaded $isLoaded and selected $selectedFile',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            OutlinedButton(
-              onPressed: loadFFmpeg,
-              child: const Text('Load FFmpeg'),
-            ),
-            OutlinedButton(
-              onPressed: isLoaded ? pickFile : null,
-              child: const Text('Pick File'),
-            ),
-            OutlinedButton(
-              onPressed: selectedFile == null ? null : extractFirstFrame,
-              child: const Text('Extract First Frame'),
-            ),
-            OutlinedButton(
-              onPressed: selectedFile == null ? null : createPreviewVideo,
-              child: const Text('Create Preview Image'),
-            ),
-            Text('Conversion Status : $conversionStatus'),
-            OutlinedButton(
-              onPressed: selectedFile == null ? null : create720PQualityVideo,
-              child: const Text('Create 720P Quality Videos'),
-            ),
-            OutlinedButton(
-              onPressed: selectedFile == null ? null : create480PQualityVideo,
-              child: const Text('Create 480P Quality Videos'),
-            ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder(
-              valueListenable: progress,
-              builder: (context, value, child) {
-                return value == null
-                    ? const SizedBox.shrink()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Exporting ${(value * 100).ceil()}%'),
-                          const SizedBox(width: 6),
-                          const CircularProgressIndicator(),
-                        ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Is FFmpeg loaded $isLoaded and selected $selectedFile',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              OutlinedButton(
+                onPressed: loadFFmpeg,
+                child: const Text('Load FFmpeg'),
+              ),
+              OutlinedButton(
+                onPressed: isLoaded ? pickFile : null,
+                child: const Text('Pick File'),
+              ),
+              OutlinedButton(
+                onPressed: selectedFile == null ? null : extractFirstFrame,
+                child: const Text('Extract First Frame'),
+              ),
+              OutlinedButton(
+                onPressed: selectedFile == null ? null : createPreviewVideo,
+                child: const Text('Create Preview Image'),
+              ),
+              Text('Conversion Status : $conversionStatus'),
+              OutlinedButton(
+                onPressed: selectedFile == null ? null : create720PQualityVideo,
+                child: const Text('Create 720P Quality Videos'),
+              ),
+              OutlinedButton(
+                onPressed: selectedFile == null ? null : create480PQualityVideo,
+                child: const Text('Create 480P Quality Videos'),
+              ),
+              const SizedBox(height: 8),
+              ValueListenableBuilder(
+                valueListenable: progress,
+                builder: (context, value, child) {
+                  return value == null
+                      ? const SizedBox.shrink()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Exporting ${(value * 100).ceil()}%'),
+                            const SizedBox(width: 6),
+                            const CircularProgressIndicator(),
+                          ],
+                        );
+                },
+              ),
+              const SizedBox(height: 8),
+              ValueListenableBuilder(
+                valueListenable: statistics,
+                builder: (context, value, child) {
+                  return value == null
+                      ? const SizedBox.shrink()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(value),
+                            const SizedBox(width: 6),
+                            const CircularProgressIndicator(),
+                          ],
+                        );
+                },
+              ),
+              Image.network(
+                "https://images.pexels.com/photos/276267/pexels-photo-276267.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+                height: 96,
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 100,
+                width: 500,
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                child: FutureBuilder(
+                  future: dashFramesFuture,
+                  builder: (ctx,snapshot){
+                    if(snapshot.connectionState == ConnectionState.done){
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.length,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16),
+                        itemBuilder: (ctx,index){
+                          return Container(
+                            height: 100,
+                            decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16))),
+                            child: Image.memory(snapshot.data![index]),
+                          );
+                        },
+                        separatorBuilder: (ctx,index){
+                          return const SizedBox(width: 8,);
+                        },
                       );
-              },
-            ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder(
-              valueListenable: statistics,
-              builder: (context, value, child) {
-                return value == null
-                    ? const SizedBox.shrink()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(value),
-                          const SizedBox(width: 6),
-                          const CircularProgressIndicator(),
-                        ],
-                      );
-              },
-            ),
-            Image.network(
-              "https://images.pexels.com/photos/276267/pexels-photo-276267.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-              height: 96,
-            ),
-          ],
+                    }
+                    else{
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: isLoaded ?  ()=>createGif() : null, child: const Text('Create Gif from frames'))
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -136,6 +173,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.refresh),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    progress.dispose();
+    statistics.dispose();
+    super.dispose();
   }
 
   Future<void> loadFFmpeg() async {
@@ -274,6 +318,55 @@ class _MyHomePageState extends State<MyHomePage> {
       conversionStatus = 'Completed';
     });
   }
+
+
+  /// It will create gif from png frames
+  Future<void> createGif() async {
+
+    for (int i = 0; i <= 43; i++) {
+      final ByteData data = await rootBundle.load(i < 10 ? 'flutter_dash_frames/flutter_dash_00$i.png' : 'flutter_dash_frames/flutter_dash_0$i.png');
+      final file = data.buffer.asUint8List();
+      ffmpeg.writeFile(i < 10 ? 'flutter_dash_00$i.png' : 'flutter_dash_0$i.png', file);
+    }
+
+    await ffmpeg.run([
+      '-framerate',
+      '30',
+      '-i',
+      'flutter_dash_%03d.png',
+      '-vf',
+      'palettegen',
+      'palette.png',
+    ]);
+    await ffmpeg.run([
+      '-framerate',
+      '30',
+      '-i',
+      'flutter_dash_%03d.png',
+      '-i',
+      'palette.png',
+      '-filter_complex',
+      '[0:v][1:v]paletteuse',
+      'flutter_dash.gif',
+    ]);
+    final previewWebpData = ffmpeg.readFile('flutter_dash.gif');
+    js.context.callMethod('webSaveAs', [
+      html.Blob([previewWebpData]),
+      'flutter_dash.gif'
+    ]);
+  }
+
+  ///It will generate List of frames to show in ui
+  Future<List<Uint8List>> _genDashFrames()async{
+    List<Uint8List> frames = [];
+    for (int i = 0; i <= 43; i++) {
+      final ByteData data = await rootBundle.load(i < 10 ? 'flutter_dash_frames/flutter_dash_00$i.png' : 'flutter_dash_frames/flutter_dash_0$i.png');
+      final image = data.buffer.asUint8List();
+      frames.add(image);
+    }
+    return frames;
+  }
+
 
   void _onProgressHandler(ProgressParam progress) {
     final isDone = progress.ratio >= 1;
