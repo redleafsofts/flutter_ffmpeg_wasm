@@ -1,5 +1,6 @@
-## Dev
+## 1.0.2
 - Bump dependencies - js
+- Added example to create gif - PR#11
 
 ## 1.0.1
 - Updated Repo Link.
