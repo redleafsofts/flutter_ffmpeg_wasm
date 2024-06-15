@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  file_picker: ^5.5.0
+  file_picker: ^8.0.5
   ffmpeg_wasm:
     path: ../
 
@@ -19,7 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.3
+  flutter_lints: ^4.0.0
 
 flutter:
 

@@ -1,3 +1,6 @@
+## Dev
+- Bump dependencies - js
+
 ## 1.0.1
 - Updated Repo Link.
 
