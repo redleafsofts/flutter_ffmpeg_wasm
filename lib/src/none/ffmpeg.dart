@@ -4,10 +4,15 @@ library ffmpeg;
 import 'dart:typed_data';
 
 abstract class CreateFFmpegParam {
-  external factory CreateFFmpegParam({bool? log, String? corePath});
+  external factory CreateFFmpegParam({
+    bool? log,
+    String? corePath,
+    String? mainName,
+  });
 
   bool? get log;
   String? get corePath;
+  String? get mainName;
 }
 
 class FFmpeg {}
