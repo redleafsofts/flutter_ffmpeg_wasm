@@ -148,6 +148,15 @@ final url = Uri.base.resolve('ffmpeg/ffmpeg-core.js').toString();
 FFmpeg ffmpeg = createFFmpeg(CreateFFmpegParam(corePath: url));
 ```
 
+For single thread implementation which doesn't require `SharedArrayBuffer`.
+
+```dart
+// Note: CreateFFmpegParam is optional and and corePath is also optional
+FFmpeg ffmpeg = createFFmpeg(CreateFFmpegParam(log: true, corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js',
+mainName: 'main'));
+```
+
+
 ### Use FFmpeg instance
 
 ```dart
@@ -232,3 +241,8 @@ final controller = VideoPlayerController.network(xFile.path);
 ```
 
 Supported Browsers - https://caniuse.com/sharedarraybuffer
+
+
+### Roadmap
+
+- [ ] Migrate to 0.12.x.

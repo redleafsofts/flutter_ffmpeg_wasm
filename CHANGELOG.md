@@ -1,3 +1,6 @@
+## 1.0.3
+- Added single thread wasm implementation. - PR#23
+
 ## 1.0.2
 - Bump dependencies - js
 - Added example to create gif - PR#11
